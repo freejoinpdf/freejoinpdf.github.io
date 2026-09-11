@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import FileSlot from './components/FileSlot';
+import logoImg from './assets/logo.jpg';
 import './App.css';
 
-// URL base do Vite para referenciar assets em public/
-const BASE_URL = import.meta.env.BASE_URL;
+
 
 /**
  * Estado inicial: dois slots vazios
@@ -112,7 +112,7 @@ export default function App() {
         <header className="header">
           <div className="logo-wrapper">
             <img
-              src={`${BASE_URL}logo.jpg`}
+              src={logoImg}
               alt="FreeJoinPDF logo — dois documentos sendo unidos"
               width="72"
               height="72"
