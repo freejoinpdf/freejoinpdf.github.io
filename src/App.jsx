@@ -5,8 +5,11 @@ import logoImg from './assets/logo.jpg';
 import { translations } from './i18n';
 import './App.css';
 
-/** Idioma padrão: pt-BR */
-const DEFAULT_LOCALE = 'pt-BR';
+/** Detecta idioma preferido do navegador, com fallback para pt-BR */
+function detectLocale() {
+  const lang = navigator.language || 'pt-BR';
+  return lang.startsWith('en') ? 'en-US' : 'pt-BR';
+}
 
 /** Estado inicial: dois slots vazios */
 function createInitialSlots() {
@@ -14,7 +17,7 @@ function createInitialSlots() {
 }
 
 export default function App() {
-  const [locale, setLocale] = useState(DEFAULT_LOCALE);
+  const [locale, setLocale] = useState(detectLocale);
   const [files, setFiles] = useState(createInitialSlots);
   const [isMerging, setIsMerging] = useState(false);
   const [toast, setToast] = useState(null); // { type: 'success'|'error', message: string }
