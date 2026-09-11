@@ -5,6 +5,10 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+# Permissão de escrita necessária para o peaceiris/actions-gh-pages fazer push na branch gh-pages
+permissions:
+  contents: write
+
 # Permite apenas um deploy simultâneo
 concurrency:
   group: 'gh-pages'
