@@ -2,23 +2,33 @@ import { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import FileSlot from './components/FileSlot';
 import logoImg from './assets/logo.jpg';
+import { translations } from './i18n';
 import './App.css';
 
+/** Detecta idioma preferido do navegador, com fallback para pt-BR */
+function detectLocale() {
+  const lang = navigator.language || 'pt-BR';
+  return lang.startsWith('en') ? 'en-US' : 'pt-BR';
+}
 
-
-/**
- * Estado inicial: dois slots vazios
- */
+/** Estado inicial: dois slots vazios */
 function createInitialSlots() {
   return [null, null];
 }
 
 export default function App() {
+  const [locale, setLocale] = useState(detectLocale);
   const [files, setFiles] = useState(createInitialSlots);
   const [isMerging, setIsMerging] = useState(false);
   const [toast, setToast] = useState(null); // { type: 'success'|'error', message: string }
 
+  const t = translations[locale];
+
   // ---- Handlers ----
+
+  function toggleLocale() {
+    setLocale((prev) => (prev === 'pt-BR' ? 'en-US' : 'pt-BR'));
+  }
 
   function handleFileChange(index, file) {
     setFiles((prev) => {
@@ -44,10 +54,7 @@ export default function App() {
     const selectedFiles = files.filter(Boolean);
 
     if (selectedFiles.length < 2) {
-      setToast({
-        type: 'error',
-        message: 'Selecione pelo menos 2 arquivos PDF para unificar.',
-      });
+      setToast({ type: 'error', message: t.errorMinFiles });
       return;
     }
 
@@ -76,7 +83,7 @@ export default function App() {
         const dataUrl = reader.result;
         const link = document.createElement('a');
         link.href = dataUrl;
-        link.download = 'freejoinpdf_unificado.pdf';
+        link.download = 'freejoinpdf_merged.pdf';
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
@@ -87,14 +94,11 @@ export default function App() {
       const totalPages = mergedPdf.getPageCount();
       setToast({
         type: 'success',
-        message: `✅ PDF unificado com sucesso! ${totalPages} páginas • ${selectedFiles.length} arquivos`,
+        message: t.successMsg(totalPages, selectedFiles.length),
       });
     } catch (err) {
       console.error('[FreeJoinPDF] Erro ao unificar PDFs:', err);
-      setToast({
-        type: 'error',
-        message: 'Erro ao unificar os PDFs. Verifique se os arquivos são válidos e tente novamente.',
-      });
+      setToast({ type: 'error', message: t.errorGeneric });
     } finally {
       setIsMerging(false);
     }
@@ -106,6 +110,27 @@ export default function App() {
 
   return (
     <main className="app">
+
+      {/* ---- Language Toggle (top-right, fixed) ---- */}
+      <div className="lang-switcher" aria-label="Language selector">
+        <button
+          id="btn-lang"
+          type="button"
+          className="lang-btn"
+          onClick={toggleLocale}
+          aria-label={locale === 'pt-BR' ? 'Switch to English' : 'Mudar para Português'}
+          title={locale === 'pt-BR' ? 'Switch to English' : 'Mudar para Português'}
+        >
+          <span className="lang-flag" aria-hidden="true">
+            {locale === 'pt-BR' ? '🇧🇷' : '🇺🇸'}
+          </span>
+          <span className="lang-label">
+            {locale === 'pt-BR' ? 'PT' : 'EN'}
+          </span>
+          <span className="lang-arrow" aria-hidden="true">⇄</span>
+        </button>
+      </div>
+
       <div className="card" role="main">
 
         {/* ---- Header ---- */}
@@ -113,25 +138,23 @@ export default function App() {
           <div className="logo-wrapper">
             <img
               src={logoImg}
-              alt="FreeJoinPDF logo — dois documentos sendo unidos"
+              alt={t.logoAlt}
               width="72"
               height="72"
             />
           </div>
 
           <h1 className="app-title">FreeJoinPDF</h1>
-          <p className="app-subtitle">
-            Unifique múltiplos PDFs em segundos, direto no seu navegador
-          </p>
+          <p className="app-subtitle">{t.subtitle}</p>
 
-          <span className="privacy-badge" aria-label="Processamento 100% local">
+          <span className="privacy-badge" aria-label={t.privacyBadge}>
             <span className="privacy-indicator" aria-hidden="true" />
-            100% local — seus arquivos não saem do seu dispositivo
+            {t.privacyBadge}
           </span>
         </header>
 
         {/* ---- File Slots ---- */}
-        <section aria-label="Arquivos para unificar">
+        <section aria-label={t.filesSection}>
           <div className="files-section" role="list">
             {files.map((file, index) => (
               <div key={index} role="listitem">
@@ -141,6 +164,9 @@ export default function App() {
                   onFileChange={(f) => handleFileChange(index, f)}
                   onRemove={() => removeFileSlot(index)}
                   canRemove={files.length > 2}
+                  labelSelect={t.selectFile}
+                  labelHint={t.clickToSelect}
+                  labelRemove={t.removeAriaLabel}
                 />
               </div>
             ))}
@@ -152,10 +178,10 @@ export default function App() {
             type="button"
             className="btn-add-file"
             onClick={addFileSlot}
-            aria-label="Adicionar mais um arquivo PDF"
+            aria-label={t.addMoreAriaLabel}
           >
             <span className="btn-add-file-icon" aria-hidden="true">＋</span>
-            Adicionar mais arquivos
+            {t.addMore}
           </button>
         </section>
 
@@ -170,23 +196,21 @@ export default function App() {
           disabled={!canMerge}
           aria-busy={isMerging}
           aria-label={
-            isMerging
-              ? 'Unificando PDFs, aguarde...'
-              : `Unificar ${selectedCount > 0 ? selectedCount : ''} PDFs e fazer download`
+            isMerging ? t.mergingAriaLabel : t.mergeAriaLabel(selectedCount)
           }
         >
           {isMerging ? (
             <>
               <span className="spinner" aria-hidden="true" />
-              Unificando PDFs…
+              {t.merging}
             </>
           ) : (
             <>
               <span aria-hidden="true">🔗</span>
-              Unificar PDFs
+              {t.merge}
               {selectedCount >= 2 && (
                 <span aria-hidden="true" style={{ opacity: 0.7, fontWeight: 400, fontSize: '0.85em' }}>
-                  ({selectedCount} arquivos)
+                  {t.mergeFiles(selectedCount)}
                 </span>
               )}
             </>
@@ -207,7 +231,7 @@ export default function App() {
 
       {/* ---- Footer ---- */}
       <footer className="footer">
-        <p>Feito com ❤️ • Gratuito, sem anúncios, sem rastreamento</p>
+        <p>{t.footer}</p>
       </footer>
     </main>
   );

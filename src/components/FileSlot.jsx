@@ -4,13 +4,25 @@ import '../App.css';
  * FileSlot — Campo de seleção de um arquivo PDF
  *
  * Props:
- *   index      {number}   — posição do slot (1-based para exibição)
- *   file       {File|null} — arquivo selecionado (null se vazio)
+ *   index        {number}    — posição do slot (1-based para exibição)
+ *   file         {File|null} — arquivo selecionado (null se vazio)
  *   onFileChange {(file: File) => void}
- *   onRemove   {() => void}
- *   canRemove  {boolean}  — false quando só existem 2 slots
+ *   onRemove     {() => void}
+ *   canRemove    {boolean}   — false quando só existem 2 slots
+ *   labelSelect  {string}    — texto "Selecionar arquivo PDF" (i18n)
+ *   labelHint    {string}    — texto "Clique para escolher" (i18n)
+ *   labelRemove  {string}    — texto aria "Remover arquivo" (i18n)
  */
-export default function FileSlot({ index, file, onFileChange, onRemove, canRemove }) {
+export default function FileSlot({
+  index,
+  file,
+  onFileChange,
+  onRemove,
+  canRemove,
+  labelSelect = 'Selecionar arquivo PDF',
+  labelHint = 'Clique para escolher',
+  labelRemove = 'Remover arquivo',
+}) {
   const inputId = `pdf-input-${index}`;
 
   function handleChange(e) {
@@ -26,7 +38,7 @@ export default function FileSlot({ index, file, onFileChange, onRemove, canRemov
         accept="application/pdf"
         className="visually-hidden"
         onChange={handleChange}
-        aria-label={`Selecionar PDF ${index}`}
+        aria-label={`${labelSelect} ${index}`}
       />
 
       <label
@@ -47,9 +59,9 @@ export default function FileSlot({ index, file, onFileChange, onRemove, canRemov
           ) : (
             <>
               <span className="file-slot-name" style={{ color: 'var(--color-text-secondary)' }}>
-                Selecionar arquivo PDF
+                {labelSelect}
               </span>
-              <span className="file-slot-hint">Clique para escolher</span>
+              <span className="file-slot-hint">{labelHint}</span>
             </>
           )}
         </span>
@@ -66,8 +78,8 @@ export default function FileSlot({ index, file, onFileChange, onRemove, canRemov
         className="file-remove-btn"
         onClick={onRemove}
         disabled={!canRemove}
-        aria-label={`Remover arquivo ${index}`}
-        title={canRemove ? 'Remover' : 'Mínimo de 2 arquivos'}
+        aria-label={`${labelRemove} ${index}`}
+        title={canRemove ? labelRemove : ''}
       >
         ✕
       </button>

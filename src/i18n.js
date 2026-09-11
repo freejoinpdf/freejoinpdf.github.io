@@ -1,0 +1,46 @@
+/**
+ * FreeJoinPDF — Traduções (i18n)
+ * Suporte: pt-BR | en-US
+ */
+export const translations = {
+  'pt-BR': {
+    logoAlt: 'FreeJoinPDF logo — dois documentos sendo unidos',
+    subtitle: 'Unifique múltiplos PDFs em segundos, direto no seu navegador',
+    privacyBadge: '100% local — seus arquivos não saem do seu dispositivo',
+    filesSection: 'Arquivos para unificar',
+    selectFile: 'Selecionar arquivo PDF',
+    clickToSelect: 'Clique para escolher',
+    addMore: 'Adicionar mais arquivos',
+    merging: 'Unificando PDFs…',
+    merge: 'Unificar PDFs',
+    mergeFiles: (n) => `(${n} arquivos)`,
+    mergeAriaLabel: (n) => `Unificar ${n > 0 ? n : ''} PDFs e fazer download`,
+    mergingAriaLabel: 'Unificando PDFs, aguarde...',
+    addMoreAriaLabel: 'Adicionar mais um arquivo PDF',
+    removeAriaLabel: 'Remover arquivo',
+    errorMinFiles: 'Selecione pelo menos 2 arquivos PDF para unificar.',
+    errorGeneric: 'Erro ao unificar os PDFs. Verifique se os arquivos são válidos e tente novamente.',
+    successMsg: (pages, count) => `✅ PDF unificado com sucesso! ${pages} páginas • ${count} arquivos`,
+    footer: 'Feito com ❤️ • Gratuito, sem anúncios, sem rastreamento',
+  },
+  'en-US': {
+    logoAlt: 'FreeJoinPDF logo — two documents being merged',
+    subtitle: 'Merge multiple PDFs in seconds, right in your browser',
+    privacyBadge: '100% local — your files never leave your device',
+    filesSection: 'Files to merge',
+    selectFile: 'Select PDF file',
+    clickToSelect: 'Click to choose',
+    addMore: 'Add more files',
+    merging: 'Merging PDFs…',
+    merge: 'Merge PDFs',
+    mergeFiles: (n) => `(${n} files)`,
+    mergeAriaLabel: (n) => `Merge ${n > 0 ? n : ''} PDFs and download`,
+    mergingAriaLabel: 'Merging PDFs, please wait...',
+    addMoreAriaLabel: 'Add one more PDF file',
+    removeAriaLabel: 'Remove file',
+    errorMinFiles: 'Please select at least 2 PDF files to merge.',
+    errorGeneric: 'Error merging PDFs. Check if the files are valid and try again.',
+    successMsg: (pages, count) => `✅ PDF merged successfully! ${pages} pages • ${count} files`,
+    footer: 'Made with ❤️ • Free, no ads, no tracking',
+  },
+};
